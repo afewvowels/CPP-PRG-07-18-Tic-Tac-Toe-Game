@@ -28,181 +28,153 @@
 
 using namespace std;
 
-const int INT_ROWS = 3;
-const int INT_COLS = 3;
+const int INT_GAMEBOARD_SIZE = 9;
 
-void initializeGameBoard(char [][INT_COLS]);
-void player1Turn(char [][INT_COLS]);
-void player2Turn(char [][INT_COLS]);
-void drawGameBoard(const char [][INT_COLS]);
-void checkForWinner(const char [][INT_COLS], bool &);
+void initializeGameBoard(char[]);
+void drawGameBoard(const char[]);
+bool checkWinner(const char[]);
+void playerOne(char[]);
+void playerTwo(char[]);
 
 int main()
 {
-    bool booGameOver = false;
+    bool isGameOver = false;
     
-    char chrGameBoard[INT_ROWS][INT_COLS];
+    char chrArrayGameBoard[INT_GAMEBOARD_SIZE];
     
-    initializeGameBoard(chrGameBoard);
-    drawGameBoard(chrGameBoard);
+    initializeGameBoard(chrArrayGameBoard);
+    drawGameBoard(chrArrayGameBoard);
     
-    while(booGameOver != true)
+    while(!isGameOver)
     {
-        player1Turn(chrGameBoard);
-        drawGameBoard(chrGameBoard);
-        checkForWinner(chrGameBoard, booGameOver);
+        playerOne(chrArrayGameBoard);
+        drawGameBoard(chrArrayGameBoard);
+        isGameOver = checkWinner(chrArrayGameBoard);
         
-        if(booGameOver != true)
+        if(!isGameOver)
         {
-            player2Turn(chrGameBoard);
-            drawGameBoard(chrGameBoard);
-            checkForWinner(chrGameBoard, booGameOver);
+            playerTwo(chrArrayGameBoard);
+            drawGameBoard(chrArrayGameBoard);
+            isGameOver = checkWinner(chrArrayGameBoard);
         }
     }
     
     return 0;
 }
 
-void initializeGameBoard(char gameBoard[][INT_COLS])
+void initializeGameBoard(char chrGameBoard[])
 {
-    for(int rows = 0 ; rows < INT_ROWS ; rows++)
+    for(int index = 0 ; index < INT_GAMEBOARD_SIZE ; index++)
     {
-        for(int cols = 0 ; cols < INT_COLS ; cols++)
-        {
-            gameBoard[rows][cols] = '*';
-        }
+        chrGameBoard[index] = index + 49; // Add 49 to convert int value to ascii character number values
     }
 }
 
-void player1Turn(char gameBoard[][INT_COLS])
+void drawGameBoard(const char chrGameBoard[])
 {
-    int tempRow;
-    int tempCol;
+    cout << endl << " " << chrGameBoard[0] << " | " << chrGameBoard[1] << " | " << chrGameBoard[2] << endl;
+    cout << "----------" << endl;
+    cout << " " << chrGameBoard[3] << " | " << chrGameBoard[4] << " | " << chrGameBoard[5] << endl;
+    cout << "----------" << endl;
+    cout << " " <<chrGameBoard[6] << " | " << chrGameBoard[7] << " | " << chrGameBoard[8] << endl << endl;
+}
+
+bool checkWinner(const char chrGameBoard[])
+{
+    bool gameOver = false;
     
-    bool isLegalMove = false;
-    
-    while(isLegalMove != true)
+    if((chrGameBoard[0] == 'X' && chrGameBoard[1] == 'X' && chrGameBoard[2] == 'X') ||
+       (chrGameBoard[3] == 'X' && chrGameBoard[4] == 'X' && chrGameBoard[5] == 'X') ||
+       (chrGameBoard[6] == 'X' && chrGameBoard[7] == 'X' && chrGameBoard[8] == 'X') ||
+       (chrGameBoard[0] == 'X' && chrGameBoard[3] == 'X' && chrGameBoard[6] == 'X') ||
+       (chrGameBoard[1] == 'X' && chrGameBoard[4] == 'X' && chrGameBoard[7] == 'X') ||
+       (chrGameBoard[2] == 'X' && chrGameBoard[5] == 'X' && chrGameBoard[8] == 'X') ||
+       (chrGameBoard[0] == 'X' && chrGameBoard[4] == 'X' && chrGameBoard[8] == 'X') ||
+       (chrGameBoard[2] == 'X' && chrGameBoard[4] == 'X' && chrGameBoard[6] == 'X'))
     {
-        cout << "Player 1, please select an unfilled square by column and row\n"
-        << "as two numbers separated by a space: ";
-        cin >> tempRow >> tempCol;
-        while(!cin || tempRow < 1 || tempRow > 3 || tempCol < 1 || tempCol > 3)
-        {
-            cout << "Please select two numbers between 1 and 3: ";
-            cin >> tempRow >> tempCol;
-        }
+        gameOver = true;
+        cout << "Congratulations Player One! You win!\n";
+    }
+    else if((chrGameBoard[0] == 'O' && chrGameBoard[1] == 'O' && chrGameBoard[2] == 'O') ||
+            (chrGameBoard[3] == 'O' && chrGameBoard[4] == 'O' && chrGameBoard[5] == 'O') ||
+            (chrGameBoard[6] == 'O' && chrGameBoard[7] == 'O' && chrGameBoard[8] == 'O') ||
+            (chrGameBoard[0] == 'O' && chrGameBoard[3] == 'O' && chrGameBoard[6] == 'O') ||
+            (chrGameBoard[1] == 'O' && chrGameBoard[4] == 'O' && chrGameBoard[7] == 'O') ||
+            (chrGameBoard[2] == 'O' && chrGameBoard[5] == 'O' && chrGameBoard[8] == 'O') ||
+            (chrGameBoard[0] == 'O' && chrGameBoard[4] == 'O' && chrGameBoard[8] == 'O') ||
+            (chrGameBoard[2] == 'O' && chrGameBoard[4] == 'O' && chrGameBoard[6] == 'O'))
+    {
+        gameOver = true;
+        cout << "Congratulations Player Two! You win!\n";
+    }
+    else if(chrGameBoard[0] != '1' && chrGameBoard[1] != '2' && chrGameBoard[2] != '3' &&
+            chrGameBoard[3] != '4' && chrGameBoard[4] != '5' && chrGameBoard[5] != '6' &&
+            chrGameBoard[6] != '7' && chrGameBoard[7] != '8' && chrGameBoard[8] != '9')
+    {
+        gameOver = true;
+        cout << "No winner, there was a tie.\n";
+    }
+    else
+    {
         
-        tempRow -= 1;
-        tempCol -= 1;
-        
-        if(gameBoard[tempRow][tempCol] == '*')
-        {
-            gameBoard[tempRow][tempCol] = 'X';
-            isLegalMove = true;
-        }
-        else
-        {
-            cout << "That space is filled already.\n";
-            isLegalMove = false;
-        }
     }
     
+    return gameOver;
+}
+
+void playerOne(char chrGameBoard[])
+{
+    int playerChoice;
+    
+    cout << "Player one, please enter a number on the board: ";
+    cin >> playerChoice;
+    while(!cin || playerChoice < 1 || playerChoice > 9)
+    {
+        cout << "Please enter a number visible on the board: ";
+        cin.clear();
+        cin.ignore();
+        cin >> playerChoice;
+    }
+    
+    if(chrGameBoard[playerChoice - 1] != 'X' && chrGameBoard[playerChoice - 1] != 'O')
+    {
+        chrGameBoard[playerChoice - 1] = 'X';
+    }
+    else
+    {
+        cout << "Please enter a number visible on the board: ";
+        cin.clear();
+        cin.ignore();
+        cin >> playerChoice;
+    }
     
 }
 
-void player2Turn(char gameBoard[][INT_COLS])
+void playerTwo(char chrGameBoard[])
 {
-    int tempRow;
-    int tempCol;
+    int playerChoice;
     
-    bool isLegalMove = false;
-    
-    while(isLegalMove != true)
+    cout << "Player two, please enter a number on the board: ";
+    cin >> playerChoice;
+    while(!cin || playerChoice < 1 || playerChoice > 9)
     {
-        cout << "Player 2, please select an unfilled square by column and row\n"
-        << "as two numbers separated by a space: ";
-        cin >> tempRow >> tempCol;
-        while(!cin || tempRow < 1 || tempRow > 3 || tempCol < 1 || tempCol > 3)
-        {
-            cout << "Please select two numbers between 1 and 3: ";
-            cin >> tempRow >> tempCol;
-        }
-        
-        tempRow -= 1;
-        tempCol -= 1;
-        
-        if(gameBoard[tempRow][tempCol] == '*')
-        {
-            gameBoard[tempRow][tempCol] = 'O';
-            isLegalMove = true;
-        }
-        else
-        {
-            cout << "That space is filled already.\n";
-            isLegalMove = false;
-        }
+        cout << "Please enter a number visible on the board: ";
+        cin.clear();
+        cin.ignore();
+        cin >> playerChoice;
     }
     
-    
-}
-
-void drawGameBoard(const char gameBoard[][INT_COLS])
-{
-    for(int rows = 0 ; rows < INT_ROWS ; rows++)
+    if(chrGameBoard[playerChoice - 1] != 'X' && chrGameBoard[playerChoice - 1] != 'O')
     {
-        for(int cols = 0 ; cols < INT_COLS ; cols++)
-        {
-            cout << gameBoard[rows][cols] << " ";
-        }
-        cout << endl;
+        chrGameBoard[playerChoice - 1] = 'O';
     }
-}
-
-void checkForWinner(const char gameBoard[][INT_COLS], bool &refIsWinner)
-{
-    int emptyCounter;
-    
-    emptyCounter = 0;
-    
-    for(int rows = 0 ; rows < INT_ROWS ; rows++)
+    else
     {
-        for(int cols = 0 ; cols < INT_COLS ; cols++)
-        {
-            if(gameBoard[rows][cols] == '*')
-            {
-                emptyCounter++;
-            }
-        }
+        cout << "Please enter a number visible on the board: ";
+        cin.clear();
+        cin.ignore();
+        cin >> playerChoice;
     }
     
-    if((gameBoard[0][0] == 'X' && gameBoard[0][1] == 'X' && gameBoard[0][2] == 'X') ||
-       (gameBoard[1][0] == 'X' && gameBoard[1][1] == 'X' && gameBoard[1][2] == 'X') ||
-       (gameBoard[2][0] == 'X' && gameBoard[2][1] == 'X' && gameBoard[2][2] == 'X') ||
-       (gameBoard[0][0] == 'X' && gameBoard[1][0] == 'X' && gameBoard[2][0] == 'X') ||
-       (gameBoard[0][1] == 'X' && gameBoard[1][1] == 'X' && gameBoard[2][1] == 'X') ||
-       (gameBoard[0][2] == 'X' && gameBoard[1][2] == 'X' && gameBoard[2][2] == 'X') ||
-       (gameBoard[0][0] == 'X' && gameBoard[1][1] == 'X' && gameBoard[2][2] == 'X') ||
-       (gameBoard[0][2] == 'X' && gameBoard[1][1] == 'X' && gameBoard[2][0] == 'X'))
-    {
-        cout << "Congratulations Player 1! You are the winner!\n";
-        refIsWinner = true;
-    }
-    else if((gameBoard[0][0] == 'O' && gameBoard[0][1] == 'O' && gameBoard[0][2] == 'O') ||
-            (gameBoard[1][0] == 'O' && gameBoard[1][1] == 'O' && gameBoard[1][2] == 'O') ||
-            (gameBoard[2][0] == 'O' && gameBoard[2][1] == 'O' && gameBoard[2][2] == 'O') ||
-            (gameBoard[0][0] == 'O' && gameBoard[1][0] == 'O' && gameBoard[2][0] == 'O') ||
-            (gameBoard[0][1] == 'O' && gameBoard[1][1] == 'O' && gameBoard[2][1] == 'O') ||
-            (gameBoard[0][2] == 'O' && gameBoard[1][2] == 'O' && gameBoard[2][2] == 'O') ||
-            (gameBoard[0][0] == 'O' && gameBoard[1][1] == 'O' && gameBoard[2][2] == 'O') ||
-            (gameBoard[0][2] == 'O' && gameBoard[1][1] == 'O' && gameBoard[2][0] == 'O'))
-    {
-        cout << "Congratulations Player 1! You are the winner!\n";
-        refIsWinner = true;
-    }
-    else if(emptyCounter == 0)
-    {
-        cout << "There was a tie, no more moves to make.\n";
-        refIsWinner = true;
-    }
 }
 
